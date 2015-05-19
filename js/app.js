@@ -54,6 +54,9 @@ $(document).ready(function(){
       if (guess == random) {
         debug('Correct');
         $('#guessList').html('<li>Correct</li>');
+      } else if (guess > (random - 5) && guess < (random + 5)) {
+        debug('Hot');
+        $('#guessList').html('<li>Hot</li>');
       } else if (guess > (random - 10) && guess < (random + 10)) {
         debug('Warmer');
    			$('#guessList').html('<li>Warmer...</li>');
