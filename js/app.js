@@ -1,6 +1,6 @@
 
 $(document).ready(function(){
-	
+
 	/*--- Display information modal box ---*/
   	$('.what').click(function(){
     	$('.overlay').fadeIn(1000);
@@ -19,6 +19,9 @@ $(document).ready(function(){
   		}
   	}
    	 	
+    function clearGuess() {
+      $('#userGuess').val('');
+    } 
   	/*--- Generate random number at parse time ---*/
   	var randomNumber = newGame();
 
@@ -29,7 +32,7 @@ $(document).ready(function(){
 
   		$('#guessList').html('');
 
-  		$('#userGuess').val('');
+      clearGuess();
 
   		$('#count').html('0');
    	});
@@ -44,40 +47,44 @@ $(document).ready(function(){
 		return randomNumber;
   	}
 
+    function printToDOM(temp) {
+      $('#feedback').html('<h2>' + temp + '</h2>');
+    }
+
   	/*--- Evaluate range of guess ---*/
-  		function between(x, min, max) {
-  			return x >= min && x <= max;
-  		}
+  		
 
   	/*--- Evaluate the user's guess against randomNumber ---*/
    	function evaluate(guess, random) {
+      var distance = Math.abs(guess-random);
+
       if (guess == random) {
         debug('Correct');
-        $('#guessList').html('<li>Correct</li>');
-      } else if (guess > (random - 5) && guess < (random + 5)) {
+        printToDOM('Correct');//$('#feedback').html('<h2>Correct</h2>');
+      } else if (distance < 5 /*(random - 5) && guess < (random + 5)*/) {
         debug('Hot');
-        $('#guessList').html('<li>Hot</li>');
-      } else if (guess > (random - 10) && guess < (random + 10)) {
+        printToDOM('Hot');
+      } else if (distance < 10 /*(random - 10) && guess < (random + 10)*/) {
         debug('Warmer');
-   			$('#guessList').html('<li>Warmer...</li>');
-   		} else if (guess > (random - 15) && guess < (random + 15)) {
+   			printToDOM('Warmer');
+   		} else if (distance < 15 /*(random - 15) && guess < (random + 15)*/) {
    			debug('Warm');
-   			$('#guessList').html('<li>Warm, guess again.</li>');
-   		} else if (guess > (random - 30) && guess < (random + 30)) {
+   			printToDOM('Warm');
+   		} else if (distance < 30 /*(random - 30) && guess < (random + 30)*/) {
         debug('Cool');
-        $('#guessList').html('<li>Cool</li>');
-      } else if (guess > (random - 40) && guess <= (random + 40)) {
+        printToDOM('Cool');
+      } else if (distance < 40 /*(random - 40) && guess <= (random + 40)*/) {
    			debug('Cold');
-   			$('#guessList').html('<li>Cold</li>');
+   			printToDOM('Cold');
    		} else if (guess < random || guess > random) {
         debug('Ice Cold');
-        $('#guessList').html('<li>Ice Cold</li>');
+        printToDOM('Ice Cold');
       };
    	}
 
    	/*--- Click event for new game ---*/
    	$('#guessButton').click(function(e) {
-
+        
    		e.preventDefault();
 
    		var guess = $('#userGuess').val();
@@ -89,11 +96,14 @@ $(document).ready(function(){
             	
             	//$('#guessList').append(guess + '<br/>');
             	$('#count').html(parseInt($('#count').html(), 10) +1);
-            };  			
+            };  
+
+            $('#guessList').append('<li>' + guess + '</li>');
             evaluate(guess, randomNumber);
+            clearGuess();            
+            //previousGuess = currentGuess;
+            //currentGuess = guess;
    	});
-
-
+    //var currentGuess = null;
+    //var previousGuess = null;
 });
-
-
